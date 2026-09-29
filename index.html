@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DH101 — Critical Making & Digital Humanities</title>
+  <meta name="description" content="Digital humanities critical making portfolio documenting weekly makes, reflections, and AI experiments.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+</head>
+<body>
+
+  <!-- =========================================================================
+       Site Header & Navigation
+       ========================================================================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#home" class="brand">
+        <div class="brand-symbol">DH</div>
+        <div class="brand-text">
+          <span class="brand-title">DH 101</span>
+          <span class="brand-badge">Critical Making</span>
+        </div>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-tabs" role="tablist">
+          <li role="presentation">
+            <a href="#home" class="nav-link active" data-tab="home" role="tab" aria-selected="true">
+              <span>🏠</span> Home
+            </a>
+          </li>
+          <li role="presentation">
+            <a href="#makes" class="nav-link" data-tab="makes" role="tab" aria-selected="false">
+              <span>🛠️</span> Makes
+            </a>
+          </li>
+          <li role="presentation">
+            <a href="#reflections" class="nav-link" data-tab="reflections" role="tab" aria-selected="false">
+              <span>💭</span> Reflections
+            </a>
+          </li>
+          <li role="presentation">
+            <a href="#pages" class="nav-link" data-tab="pages" role="tab" aria-selected="false">
+              <span>📄</span> Pages
+            </a>
+          </li>
+          <li role="presentation">
+            <a href="#ai-log" class="nav-link" data-tab="ai-log" role="tab" aria-selected="false">
+              <span>🤖</span> AI Log
+            </a>
+          </li>
+          <li role="presentation">
+            <a href="#cv" class="nav-link" data-tab="cv" role="tab" aria-selected="false">
+              <span>🎓</span> CV
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle theme">
+          🌙
+        </button>
+        <button id="mobile-menu-toggle" class="mobile-menu-btn" aria-label="Open menu">
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       Main Content Area
+       ========================================================================= -->
+  <main id="main-content">
+
+    <!-- -----------------------------------------------------------------------
+         Tab 1: Home View
+         ----------------------------------------------------------------------- -->
+    <section id="view-home" class="view-section active">
+      <div class="container">
+        <!-- Hero Card -->
+        <div class="hero-card">
+          <div class="hero-pill-badge">✨ Digital Humanities 101 • Fall 2026</div>
+          <h1 class="hero-title">Critical Making & Digital Humanities</h1>
+          <p class="hero-subtitle">
+            Hello, DH! This site documents my critical making, hands-on fabrication, AI prompt interactions, and theoretical reflections throughout the semester.
+          </p>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+            <a href="#makes" class="btn-primary">Explore Weekly Makes 🛠️</a>
+            <a href="#reflections" class="btn-secondary">Read Reflections 💭</a>
+            <a href="#cv" class="btn-secondary">View My CV 🎓</a>
+          </div>
+
+          <div class="hero-metrics">
+            <div class="metric-pill">
+              <span class="metric-number">13</span>
+              <span class="metric-label">Semester Weeks</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-number">12</span>
+              <span class="metric-label">Critical Makes</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-number">13</span>
+              <span class="metric-label">Reflections</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-number">100%</span>
+              <span class="metric-label">Open & Transparent</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course Roadmap Grid -->
+        <div style="margin-top: 3.5rem;">
+          <div class="section-header">
+            <div class="section-eyebrow">Syllabus Overview</div>
+            <h2 class="section-title">Critical Making Roadmap</h2>
+            <p class="section-desc">
+              Browse each week's hands-on project and critical inquiry prompt. Select any week to view the corresponding make and reflection.
+            </p>
+          </div>
+
+          <div id="home-weeks-grid" class="cards-grid">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Quick Access to Course Pages -->
+        <div style="margin-top: 4rem;">
+          <div class="section-header">
+            <div class="section-eyebrow">Foundational Documents</div>
+            <h2 class="section-title">Course Pages & Policies</h2>
+            <p class="section-desc">
+              Core statements outlining research ethics, algorithmic usage principles, and accessible design.
+            </p>
+          </div>
+
+          <div class="cards-grid">
+            <div class="card-item">
+              <div class="card-top">
+                <span class="card-icon">👤</span>
+                <span class="pastel-tag tag-lavender">About</span>
+              </div>
+              <h3 class="card-title">About Me</h3>
+              <p class="card-desc">Personal background, scholarly trajectory, and critical questions motivating this semester's work.</p>
+              <a href="#pages?page=about" class="card-footer-link">Read Bio &rarr;</a>
+            </div>
+
+            <div class="card-item">
+              <div class="card-top">
+                <span class="card-icon">🤖</span>
+                <span class="pastel-tag tag-mint">Methodology</span>
+              </div>
+              <h3 class="card-title">How I Use AI</h3>
+              <p class="card-desc">Philosophical and practical framework for treating AI as a tool for inquiry rather than a surrogate thinker.</p>
+              <a href="#pages?page=how-i-use-ai" class="card-footer-link">Read Framework &rarr;</a>
+            </div>
+
+            <div class="card-item">
+              <div class="card-top">
+                <span class="card-icon">🌱</span>
+                <span class="pastel-tag tag-rose">Ecology</span>
+              </div>
+              <h3 class="card-title">Sustainability & Ethics</h3>
+              <p class="card-desc">Addressing the terrestrial realities of computation: water usage, carbon footprints, and supply chain ethics.</p>
+              <a href="#pages?page=sustainability" class="card-footer-link">Read Statement &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         Tab 2: Makes View
+         ----------------------------------------------------------------------- -->
+    <section id="view-makes" class="view-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">Critical Making Portfolio</div>
+          <h1 class="section-title">Weekly Makes</h1>
+          <p class="section-desc">
+            Hands-on projects deconstructing computational media through reverse engineering, counter-mapping, distant reading, and generative remix.
+          </p>
+        </div>
+
+        <!-- Week Switcher Pills Bar -->
+        <div class="week-scroller-wrap">
+          <div id="makes-week-pills" class="week-pills-bar">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Selected Make Details -->
+        <div id="make-detail-container">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         Tab 3: Reflections View
+         ----------------------------------------------------------------------- -->
+    <section id="view-reflections" class="view-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">Theoretical Synthesis</div>
+          <h1 class="section-title">Weekly Reflections</h1>
+          <p class="section-desc">
+            Rigorous 200–300 word critical inquiries interrogating agency, authenticity, authorship, labor, and algorithmic futures.
+          </p>
+        </div>
+
+        <!-- Reflection Week Switcher Pills Bar -->
+        <div class="week-scroller-wrap">
+          <div id="reflections-week-pills" class="week-pills-bar">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Selected Reflection Details -->
+        <div id="reflections-detail-container">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         Tab 4: Course Pages View
+         ----------------------------------------------------------------------- -->
+    <section id="view-pages" class="view-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">Foundational Documents</div>
+          <h1 class="section-title">Course Pages</h1>
+          <p class="section-desc">
+            Essential statements on digital scholarship, accessibility standards, ecological awareness, and markdown authoring.
+          </p>
+        </div>
+
+        <!-- Category Grid Selector -->
+        <div id="pages-cards-container" class="cards-grid" style="margin-bottom: 2.5rem;">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+        <!-- Active Page Article Reader -->
+        <div id="page-article-view">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         Tab 5: AI Log View
+         ----------------------------------------------------------------------- -->
+    <section id="view-ai-log" class="view-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">Provenance & Transparency</div>
+          <h1 class="section-title">AI Use Log</h1>
+          <p class="section-desc">
+            Documenting the rationale, prompts, outputs, and critical decisions made when collaborating with generative AI systems.
+          </p>
+        </div>
+
+        <div class="ai-log-layout">
+          <!-- Interactive Log Generator Form -->
+          <div class="log-form-box">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+              ✍️ Record an AI Interaction
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+              Fill in your prompting context to generate a markdown log entry matching the course template.
+            </p>
+
+            <form id="ai-log-form">
+              <div class="form-group">
+                <label for="log-date">Date</label>
+                <input type="date" id="log-date" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label for="log-tool">Tool / Model Used</label>
+                <input type="text" id="log-tool" class="form-control" placeholder="e.g. Claude 3.5, Gemini, Midjourney v6" required>
+              </div>
+
+              <div class="form-group">
+                <label for="log-task">Task / Prompt</label>
+                <textarea id="log-task" class="form-control" rows="3" placeholder="What task did you prompt the AI to assist with?" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="log-suggested">What the AI Suggested</label>
+                <textarea id="log-suggested" class="form-control" rows="2" placeholder="Summary of the model's output or recommendations" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="log-decided">What I Accepted, Changed, or Rejected</label>
+                <textarea id="log-decided" class="form-control" rows="2" placeholder="How did you modify or critique the output?" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="log-why">Scholarly Rationale (Why)</label>
+                <textarea id="log-why" class="form-control" rows="2" placeholder="Why did you make those decisions?" required></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary" style="width: 100%;">
+                Save to Log & Generate Markdown ➕
+              </button>
+            </form>
+
+            <!-- Markdown Output Box -->
+            <div id="generated-markdown-box" style="display: none; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.82rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase;">Markdown Template</span>
+                <button id="copy-markdown-btn" class="btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">📋 Copy Markdown Snippet</button>
+              </div>
+              <pre style="background: var(--code-bg); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.82rem; overflow-x: auto;"><code id="markdown-snippet-code"></code></pre>
+            </div>
+          </div>
+
+          <!-- Existing Log Entries List -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
+                📜 Log History
+              </h3>
+              <a href="ai-log/template-ai-log.md" class="btn-secondary" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;" target="_blank">
+                📄 Template File
+              </a>
+            </div>
+            <div id="ai-logs-timeline" class="log-timeline">
+              <!-- Populated dynamically by app.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -----------------------------------------------------------------------
+         Tab 6: CV / Resume View (User Requested)
+         ----------------------------------------------------------------------- -->
+    <section id="view-cv" class="view-section">
+      <div class="container cv-container">
+        <!-- Action bar for print/download -->
+        <div class="cv-actions-bar">
+          <a href="pages/cv.md" class="btn-secondary" target="_blank">
+            📄 View Markdown CV
+          </a>
+          <button id="print-cv-btn" class="btn-primary">
+            🖨️ Print / Save as PDF
+          </button>
+        </div>
+
+        <!-- Rendered CV Sheet -->
+        <div id="cv-sheet-content">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       Site Footer
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-info">
+        <p><strong>DH 101</strong> — Critical Making & Digital Humanities</p>
+        <p style="margin-top: 0.25rem;">Crafted with soft pastel styling and accessibility in mind.</p>
+      </div>
+
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#makes">Makes</a></li>
+        <li><a href="#reflections">Reflections</a></li>
+        <li><a href="#pages">Pages</a></li>
+        <li><a href="#ai-log">AI Log</a></li>
+        <li><a href="#cv">CV</a></li>
+        <li><a href="https://github.com/adelinebohi/DH101" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/content-data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
