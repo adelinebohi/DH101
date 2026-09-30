@@ -266,6 +266,35 @@
 
     // Find active week
     const current = DH101_DATA.weeks.find(w => w.num === state.selectedMakeWeek) || DH101_DATA.weeks[0];
+    const numStr = current.num < 10 ? '0' + current.num : current.num;
+    const makeFilePath = `makes/week${numStr}.md`;
+
+    if (current.hasMakeFile) {
+      fetch(makeFilePath)
+        .then(res => {
+          if (!res.ok) throw new Error('Fetch failed');
+          return res.text();
+        })
+        .then(mdText => {
+          renderMakeCard(current, makeFilePath, mdText);
+        })
+        .catch(() => {
+          renderMakeCard(current, makeFilePath, null);
+        });
+    } else {
+      renderMakeCard(current, null, null);
+    }
+  }
+
+  function renderMakeCard(current, makeFilePath, customMarkdown) {
+    const content = document.getElementById('make-detail-container');
+    if (!content) return;
+
+    // Detect if student added custom notes to make file
+    const isCustomized = customMarkdown && (
+      !customMarkdown.includes("Describe or embed your artifact here.") ||
+      customMarkdown.length > 550
+    );
 
     content.innerHTML = `
       <div class="detail-card">
@@ -278,10 +307,12 @@
             <h2>Week ${current.num} – ${current.title}</h2>
             <p style="color: var(--text-secondary); font-size: 0.96rem;">${current.artifactOverview}</p>
           </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <a href="makes/week${current.num < 10 ? '0' + current.num : current.num}.md" class="btn-secondary" target="_blank">
-              📄 View Markdown File
-            </a>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            ${makeFilePath ? `
+              <a href="${makeFilePath}" class="btn-secondary" target="_blank">
+                📄 View ${makeFilePath}
+              </a>
+            ` : ''}
             <a href="#reflections?week=${current.num}" class="btn-primary" style="padding: 0.55rem 1rem; font-size: 0.88rem;">
               💭 Week ${current.num} Reflection &rarr;
             </a>
@@ -293,48 +324,65 @@
           <p>${current.prompt}</p>
         </div>
 
-        <div class="subsections-grid">
-          <div class="subsection-box">
-            <h3>🎨 1. The Artifact</h3>
-            <p>Physical or digital artifact produced for this week's exploration.</p>
-            <ul>
-              <li>Deconstructed media, code prototype, or visual remix.</li>
-              <li>Includes screenshots, live links, or embedded visual documentation.</li>
-              <li>Examines material properties and computational affordances.</li>
-            </ul>
+        ${isCustomized ? `
+          <div class="markdown-article" style="margin-top: 1.5rem; padding: 2rem;">
+            ${parseMarkdown(customMarkdown)}
           </div>
+        ` : `
+          <div class="subsections-grid">
+            <div class="subsection-box">
+              <h3>🎨 1. The Artifact</h3>
+              <p>Physical or digital artifact produced for this week's exploration.</p>
+              <ul>
+                <li>Deconstructed media, code prototype, or visual remix.</li>
+                <li>Includes screenshots, live links, or embedded visual documentation.</li>
+                <li>Examines material properties and computational affordances.</li>
+              </ul>
+            </div>
 
-          <div class="subsection-box">
-            <h3>⚙️ 2. Process Notes</h3>
-            <p>Methodological choices and technical implementation details.</p>
-            <ul>
-              <li><strong>Tools Deployed:</strong> Markdown, web tools, image editors, generative APIs.</li>
-              <li><strong>Pivot Points:</strong> Unanticipated roadblocks and design adjustments.</li>
-              <li><strong>Iterations:</strong> How the artifact developed from concept to finished state.</li>
-            </ul>
-          </div>
+            <div class="subsection-box">
+              <h3>⚙️ 2. Process Notes</h3>
+              <p>Methodological choices and technical implementation details.</p>
+              <ul>
+                <li><strong>Tools Deployed:</strong> Markdown, web tools, image editors, generative APIs.</li>
+                <li><strong>Pivot Points:</strong> Unanticipated roadblocks and design adjustments.</li>
+                <li><strong>Iterations:</strong> How the artifact developed from concept to finished state.</li>
+              </ul>
+            </div>
 
-          <div class="subsection-box">
-            <h3>💭 3. Critical Reflection</h3>
-            <p>200–300 word critical synthesis contextualizing this make within DH discourse.</p>
-            <ul>
-              <li>Addresses the week's prompt directly.</li>
-              <li>Connects hands-on making with broader cultural or ethical implications.</li>
-            </ul>
-          </div>
+            <div class="subsection-box">
+              <h3>💭 3. Critical Reflection</h3>
+              <p>200–300 word critical synthesis contextualizing this make within DH discourse.</p>
+              <ul>
+                <li>Addresses the week's prompt directly.</li>
+                <li>Connects hands-on making with broader cultural or ethical implications.</li>
+              </ul>
+            </div>
 
-          <div class="subsection-box">
-            <h3>🤖 4. Attribution & AI Use</h3>
-            <p>Radical transparency log for this critical make.</p>
-            <ul>
-              <li><strong>AI Tools Used:</strong> Model, version, and prompting strategy.</li>
-              <li><strong>Generated vs. Edited:</strong> Clear provenance of what machine generated vs. what human authored.</li>
-              <li><strong>Critical Rationale:</strong> Why specific algorithmic options were accepted or discarded.</li>
-            </ul>
+            <div class="subsection-box">
+              <h3>🤖 4. Attribution & AI Use</h3>
+              <p>Radical transparency log for this critical make.</p>
+              <ul>
+                <li><strong>AI Tools Used:</strong> Model, version, and prompting strategy.</li>
+                <li><strong>Generated vs. Edited:</strong> Clear provenance of what machine generated vs. what human authored.</li>
+                <li><strong>Critical Rationale:</strong> Why specific algorithmic options were accepted or discarded.</li>
+              </ul>
+            </div>
           </div>
-        </div>
+        `}
       </div>
     `;
+  }
+
+  // Helper: Extract student written reflection text from markdown
+  function extractReflectionBody(raw, defaultPrompt) {
+    if (!raw) return '';
+    let cleaned = raw.replace(/^>\s*\*\*Markdown help:\*\*.*$/gim, '').trim();
+    cleaned = cleaned.replace(/^#\s+Week\s+\d+\s+Reflection/gim, '').trim();
+    if (defaultPrompt) {
+      cleaned = cleaned.replace(/^Reflect\s+\d+:?[^\n]*\n?/gim, '').trim();
+    }
+    return cleaned.trim();
   }
 
   // 3. Reflections View
@@ -359,6 +407,33 @@
     });
 
     const current = DH101_DATA.weeks.find(w => w.num === state.selectedReflectWeek) || DH101_DATA.weeks[0];
+    const numStr = current.num < 10 ? '0' + current.num : current.num;
+    const filePath = `reflections/week${numStr}.md`;
+
+    // Try fetching the markdown file first (works on web servers and GitHub Pages)
+    // Fall back to DH101_DATA.reflections for local file:// mode
+    fetch(filePath)
+      .then(res => {
+        if (!res.ok) throw new Error('Fetch failed');
+        return res.text();
+      })
+      .then(text => {
+        const body = extractReflectionBody(text, current.prompt);
+        renderReflectionCard(current, body, filePath);
+      })
+      .catch(() => {
+        const fallbackText = (DH101_DATA.reflections && DH101_DATA.reflections[current.num]) || '';
+        const body = extractReflectionBody(fallbackText, current.prompt);
+        renderReflectionCard(current, body, filePath);
+      });
+  }
+
+  function renderReflectionCard(current, reflectionText, filePath) {
+    const content = document.getElementById('reflections-detail-container');
+    if (!content) return;
+
+    const wordCount = reflectionText ? reflectionText.trim().split(/\s+/).filter(Boolean).length : 0;
+    const hasReflection = wordCount > 0;
 
     content.innerHTML = `
       <div class="detail-card">
@@ -368,9 +443,9 @@
             <h2>Week ${current.num}: ${current.title}</h2>
             <p style="color: var(--text-secondary);">${current.tag} Inquiry</p>
           </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <a href="reflections/week${current.num < 10 ? '0' + current.num : current.num}.md" class="btn-secondary" target="_blank">
-              📄 View Markdown
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <a href="${filePath}" class="btn-secondary" target="_blank">
+              📄 View ${filePath}
             </a>
             <a href="#makes?week=${current.num}" class="btn-secondary">
               🛠️ View Week ${current.num} Make
@@ -383,7 +458,35 @@
           <p>${current.prompt}</p>
         </div>
 
-        <div class="subsections-grid">
+        ${hasReflection ? `
+          <!-- Student's Written Reflection -->
+          <div class="subsection-box" style="margin-top: 1.5rem; background: var(--bg-surface); border: 1.5px solid var(--pastel-${current.pastelColor}-border); padding: 1.85rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.15rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <span style="font-size: 1.3rem;">📝</span>
+                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">My Reflection</h3>
+              </div>
+              <span class="pastel-tag tag-${current.pastelColor}" style="font-size: 0.8rem; padding: 0.3rem 0.7rem;">${wordCount} words</span>
+            </div>
+            <div class="reflection-body-content" style="font-size: 1.04rem; line-height: 1.75; color: var(--text-primary);">
+              ${parseMarkdown(reflectionText)}
+            </div>
+          </div>
+        ` : `
+          <!-- No Reflection Written Yet -->
+          <div class="subsection-box" style="margin-top: 1.5rem; padding: 2.25rem 1.5rem; text-align: center; background: var(--bg-surface-subtle); border-radius: var(--radius-md);">
+            <div style="font-size: 2.4rem; margin-bottom: 0.75rem;">✍️</div>
+            <h3 style="justify-content: center; font-size: 1.15rem; margin-bottom: 0.5rem;">No Reflection Written Yet for Week ${current.num}</h3>
+            <p style="max-width: 520px; margin: 0 auto 1.25rem; font-size: 0.94rem; color: var(--text-secondary); line-height: 1.5;">
+              To add your reflection, open <code>${filePath}</code> in your text editor, write your response below the prompt, and save the file.
+            </p>
+            <a href="${filePath}" class="btn-primary" target="_blank" style="font-size: 0.88rem; padding: 0.55rem 1.15rem;">
+              ✏️ Open ${filePath} to Edit
+            </a>
+          </div>
+        `}
+
+        <div class="subsections-grid" style="margin-top: 2rem;">
           <div class="subsection-box">
             <h3>💡 Prompt 1: Key Insight</h3>
             <p>What surprised you or challenged your preconceptions this week? How does this question redefine our relationship with computational artifacts?</p>
@@ -403,7 +506,7 @@
         <div style="margin-top: 2rem; padding: 1.25rem; background: var(--bg-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
           <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.4rem;">📘 Reflection Writing Guidelines (from Markdown Guide)</h4>
           <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-            Keep responses between 200–300 words. Prefer concise paragraphs and structured bullet points. When discussing AI contributions, be clear about authorship boundaries.
+            Aim for 200–300 words. Prefer concise paragraphs and structured points. When discussing AI contributions, clarify human authorship versus algorithmic assistance.
           </p>
         </div>
       </div>
