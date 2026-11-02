@@ -1,4 +1,4 @@
-# Week 8 – Networks of Knowledge & Power
+# Week 8 – Make 6: Networks of Knowledge & Power
 
 ## The Artifact
 Describe or embed your artifact here.

@@ -9,7 +9,7 @@
   // State
   const state = {
     currentTab: 'home',
-    selectedMakeWeek: 1,
+    selectedMakeWeek: 3,
     selectedReflectWeek: 1,
     selectedPageId: 'about',
     theme: 'light',
@@ -55,8 +55,13 @@
     html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
     html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
 
-    // Images
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" loading="lazy">');
+    // Images (clean ../assets/ to assets/ for root index.html)
+    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function(_, alt, src) {
+      const cleanSrc = src.replace(/^\.\.\//, '');
+      return `<img src="${cleanSrc}" alt="${alt}" loading="lazy">`;
+    });
+    // Also normalize raw HTML img tags with ../assets/
+    html = html.replace(/src="\.\.\/assets\//g, 'src="assets/');
 
     // Links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -85,7 +90,7 @@
     html = blocks.map(block => {
       const trimmed = block.trim();
       if (!trimmed) return '';
-      if (/^<(h[1-6]|ul|ol|pre|blockquote|table|hr)/i.test(trimmed)) {
+      if (/^<(h[1-6]|ul|ol|pre|blockquote|table|hr|div|iframe|figure|section|p)/i.test(trimmed)) {
         return trimmed;
       }
       return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
@@ -157,6 +162,8 @@
         state.selectedMakeWeek = wk;
         state.selectedReflectWeek = wk;
       }
+    } else if (state.currentTab === 'makes' && state.selectedMakeWeek < 3) {
+      state.selectedMakeWeek = 3;
     }
 
     if (params.has('page')) {
@@ -225,21 +232,28 @@
     const roadmapContainer = document.getElementById('home-weeks-grid');
     if (!roadmapContainer) return;
 
-    roadmapContainer.innerHTML = DH101_DATA.weeks.map(w => `
+    roadmapContainer.innerHTML = DH101_DATA.weeks.map(w => {
+      const displayTitle = w.makeNum ? `Week ${w.num} Make ${w.makeNum}: ${w.title}` : `Week ${w.num}: ${w.title}`;
+      const makeLink = w.makeNum
+        ? `<a href="#makes?week=${w.num}" class="card-footer-link">🛠️ Make ${w.makeNum} &rarr;</a>`
+        : `<span style="color:var(--text-tertiary); font-size:0.85rem;">No Make (Reflection only)</span>`;
+
+      return `
       <div class="card-item">
         <div class="card-top">
           <span class="pastel-tag tag-${w.pastelColor}">Week ${w.num < 10 ? '0' + w.num : w.num}</span>
           <span class="pastel-tag" style="background:var(--bg-surface-subtle); color:var(--text-tertiary);">${w.tag}</span>
         </div>
-        <h3 class="card-title">${w.title}</h3>
+        <h3 class="card-title">${displayTitle}</h3>
         <p class="card-desc">${w.prompt}</p>
-        <div style="display:flex; gap:0.5rem; margin-top:auto;">
-          <a href="#makes?week=${w.num}" class="card-footer-link">🛠️ Make &rarr;</a>
+        <div style="display:flex; gap:0.5rem; margin-top:auto; align-items:center; flex-wrap:wrap;">
+          ${makeLink}
           <span style="color:var(--border-strong);">•</span>
           <a href="#reflections?week=${w.num}" class="card-footer-link">💭 Reflection &rarr;</a>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   // 2. Makes View
@@ -248,11 +262,19 @@
     const content = document.getElementById('make-detail-container');
     if (!scroller || !content) return;
 
+    // Filter to weeks that have critical makes (Weeks 3–14: Make 1 to Make 12)
+    const makeWeeks = DH101_DATA.weeks.filter(w => w.makeNum !== null);
+
+    // If currently selected week has no make and not specified by query, default to week 3
+    if (!makeWeeks.some(w => w.num === state.selectedMakeWeek) && !window.location.hash.includes('week=')) {
+      state.selectedMakeWeek = 3;
+    }
+
     // Render pills
-    scroller.innerHTML = DH101_DATA.weeks.map(w => `
+    scroller.innerHTML = makeWeeks.map(w => `
       <button class="week-pill-btn ${w.num === state.selectedMakeWeek ? 'active' : ''}" data-week="${w.num}">
         <span class="week-pill-dot" style="background-color: var(--pastel-${w.pastelColor}-accent);"></span>
-        <span>Week ${w.num}: ${w.title.split('–')[0]}</span>
+        <span>Week ${w.num} Make ${w.makeNum}: ${w.title}</span>
       </button>
     `).join('');
 
@@ -265,7 +287,7 @@
     });
 
     // Find active week
-    const current = DH101_DATA.weeks.find(w => w.num === state.selectedMakeWeek) || DH101_DATA.weeks[0];
+    const current = DH101_DATA.weeks.find(w => w.num === state.selectedMakeWeek) || makeWeeks[0];
     const numStr = current.num < 10 ? '0' + current.num : current.num;
     const makeFilePath = `makes/week${numStr}.md`;
 
@@ -279,10 +301,12 @@
           renderMakeCard(current, makeFilePath, mdText);
         })
         .catch(() => {
-          renderMakeCard(current, makeFilePath, null);
+          const fallback = (DH101_DATA.makes && DH101_DATA.makes[current.num]) || null;
+          renderMakeCard(current, makeFilePath, fallback);
         });
     } else {
-      renderMakeCard(current, null, null);
+      const fallback = (DH101_DATA.makes && DH101_DATA.makes[current.num]) || null;
+      renderMakeCard(current, null, fallback);
     }
   }
 
@@ -290,10 +314,45 @@
     const content = document.getElementById('make-detail-container');
     if (!content) return;
 
+    // Handle case where week has no critical make (e.g. Week 1 or Week 2)
+    if (!current.hasMakeFile || !current.makeNum) {
+      content.innerHTML = `
+        <div class="detail-card">
+          <div class="detail-header">
+            <div class="detail-title-group">
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                <span class="pastel-tag tag-${current.pastelColor}">Week ${current.num}</span>
+                <span class="pastel-tag" style="background: var(--bg-surface-subtle); color: var(--text-tertiary);">${current.tag}</span>
+              </div>
+              <h2>Week ${current.num}: ${current.title}</h2>
+              <p style="color: var(--text-secondary); font-size: 0.96rem;">
+                There is no critical make scheduled for Week ${current.num}. Critical makes begin in <strong>Week 3 (Make 1: Selfie & Identity)</strong>.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <a href="#reflections?week=${current.num}" class="btn-primary" style="padding: 0.55rem 1rem; font-size: 0.88rem;">
+                💭 Week ${current.num} Reflection &rarr;
+              </a>
+              <a href="#makes?week=3" class="btn-secondary" style="padding: 0.55rem 1rem; font-size: 0.88rem;">
+                🛠️ Go to Week 3 Make 1 &rarr;
+              </a>
+            </div>
+          </div>
+          <div class="detail-prompt-box">
+            <h4>Guiding Theoretical Inquiry</h4>
+            <p>${current.prompt}</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     // Detect if student added custom notes to make file
     const isCustomized = customMarkdown && (
       !customMarkdown.includes("Describe or embed your artifact here.") ||
-      customMarkdown.length > 550
+      customMarkdown.length > 550 ||
+      customMarkdown.includes("assets/images/") ||
+      customMarkdown.includes("<iframe")
     );
 
     content.innerHTML = `
@@ -301,10 +360,10 @@
         <div class="detail-header">
           <div class="detail-title-group">
             <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
-              <span class="pastel-tag tag-${current.pastelColor}">Week ${current.num} Make</span>
+              <span class="pastel-tag tag-${current.pastelColor}">Week ${current.num} • Make ${current.makeNum}</span>
               <span class="pastel-tag" style="background: var(--bg-surface-subtle); color: var(--text-tertiary);">${current.tag}</span>
             </div>
-            <h2>Week ${current.num} – ${current.title}</h2>
+            <h2>Week ${current.num} Make ${current.makeNum}: ${current.title}</h2>
             <p style="color: var(--text-secondary); font-size: 0.96rem;">${current.artifactOverview}</p>
           </div>
           <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
@@ -440,16 +499,18 @@
         <div class="detail-header">
           <div class="detail-title-group">
             <span class="pastel-tag tag-${current.pastelColor}" style="margin-bottom: 0.5rem;">Week ${current.num} Reflection</span>
-            <h2>Week ${current.num}: ${current.title}</h2>
+            <h2>Week ${current.num} Reflection: ${current.title}</h2>
             <p style="color: var(--text-secondary);">${current.tag} Inquiry</p>
           </div>
           <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
             <a href="${filePath}" class="btn-secondary" target="_blank">
               📄 View ${filePath}
             </a>
-            <a href="#makes?week=${current.num}" class="btn-secondary">
-              🛠️ View Week ${current.num} Make
-            </a>
+            ${current.makeNum ? `
+              <a href="#makes?week=${current.num}" class="btn-secondary">
+                🛠️ View Week ${current.num} Make ${current.makeNum}
+              </a>
+            ` : ''}
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-# Week 9 – Bots & Generators
+# Week 9 – Make 7: Bots & Generators
 
 ## The Artifact
 Describe or embed your artifact here.

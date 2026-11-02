@@ -1,4 +1,4 @@
-# Week 11 – AI & Labor
+# Week 11 – Make 9: AI & Labor
 
 ## The Artifact
 Describe or embed your artifact here.

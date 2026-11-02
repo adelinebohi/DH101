@@ -1,4 +1,4 @@
-# Week 10 – Games & Play
+# Week 10 – Make 8: Games & Play
 
 ## The Artifact
 Describe or embed your artifact here.

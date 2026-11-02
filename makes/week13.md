@@ -1,4 +1,4 @@
-# Week 13 – Futures of AI & Humanity
+# Week 13 – Make 11: Futures of AI & Humanity
 
 ## The Artifact
 Describe or embed your artifact here.

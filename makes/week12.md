@@ -1,4 +1,4 @@
-# Week 12 – AI & Ecology
+# Week 12 – Make 10: AI & Ecology
 
 ## The Artifact
 Describe or embed your artifact here.
