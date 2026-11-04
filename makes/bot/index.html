@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DH Title Bot</title>
+<style>
+:root{--bg:#faf7f2;--ink:#1f1b16;--mute:#6b645a;--acc:#9b2d20;--card:#fff;--line:#e4ddd0}
+@media(prefers-color-scheme:dark){:root{--bg:#171512;--ink:#f2ece2;--mute:#a39b8d;--acc:#e0705f;--card:#211e1a;--line:#38332c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.4}
+main{max-width:720px;margin:0 auto;padding:40px 20px 80px}
+h1{font-size:30px;margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 28px;font-family:system-ui,sans-serif;font-size:15px}
+#out{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px 24px;min-height:120px;font-size:26px;display:flex;align-items:center}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 32px;font-family:system-ui,sans-serif}
+button{font:inherit;font-size:15px;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.p{background:var(--acc);border-color:var(--acc);color:#fff}
+button:hover{filter:brightness(.95)}
+h2{font-size:18px;margin:28px 0 10px;font-family:system-ui,sans-serif}
+ul{list-style:none;padding:0;margin:0}
+li{padding:10px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;justify-content:space-between;align-items:baseline}
+li span{flex:1}
+li button{font-size:12px;padding:4px 8px}
+.count{color:var(--mute);font-family:system-ui,sans-serif;font-size:13px}
+</style></head><body><main>
+<h1>DH Title Bot</h1>
+<p class="sub">Generates fake digital humanities paper titles from a 13-symbol Tracery-style grammar. Generate, then keep the ones you like: that's the curation.</p>
+<div id="out" aria-live="polite">Press Generate.</div>
+<div class="row">
+<button class="p" id="gen">Generate</button>
+<button id="keep">Keep this title</button>
+<button id="ten">Generate 10</button>
+</div>
+<div class="count" id="count">Generated: 0 · Kept: 0</div>
+<div id="tenWrap" hidden><h2>Ten at once</h2><ul id="tenList"></ul></div>
+<h2>Kept titles</h2>
+<ul id="kept"></ul>
+</main>
+<script>
+const G = {
+  "origin": [
+    "#title#",
+    "#title#",
+    "#title#"
+  ],
+  "title": [
+    "#topic.capitalize#: #subtitle#",
+    "#topic.capitalize#: #subtitle#",
+    "#question.capitalize#",
+    "#gerund.capitalize# #object# with #method#: #subtitle#",
+    "#gerund.capitalize# #object# in the Age of #era#"
+  ],
+  "topic": [
+    "the #adj# #noun#",
+    "#adj# #noun#s and their #noun#s",
+    "#noun# as #noun#",
+    "toward #adj.a# #noun#",
+    "#adj.a# #noun# of #object#"
+  ],
+  "subtitle": [
+    "A #method# Approach to #object#",
+    "#gerund.capitalize# #object# Across #place#",
+    "Notes on #object# and #object#",
+    "What #noun.a.capitalize# Can Teach Us About #object#",
+    "#adj.a.capitalize# Case Study of #place#",
+    "Lessons from #object# in #place#"
+  ],
+  "question": [
+    "is #object# just #noun.a#?",
+    "can #noun.a# be #adj#?",
+    "who owns #object# in #place#?",
+    "what do we lose when we #verb# #object#?",
+    "why does #object# keep #gerund#?"
+  ],
+  "adj": [
+    "algorithmic", "networked", "haunted", "crowdsourced", "post-human",
+    "distant", "archival", "feral", "synthetic", "vernacular",
+    "accidental", "open-source", "melancholy", "recursive"
+  ],
+  "noun": [
+    "archive", "spreadsheet", "chatbot", "map", "metadata", "database",
+    "meme", "dataset", "algorithm", "playlist", "footnote", "interface",
+    "corpus", "timeline"
+  ],
+  "object": [
+    "memory", "campus life", "the college library", "group chats",
+    "lost libraries", "digital labor", "handwritten letters", "shared playlists",
+    "student data", "the humanities", "forgotten websites", "authorship",
+    "cultural heritage", "everyday language"
+  ],
+  "method": [
+    "Distant Reading", "Network Analysis", "Close Listening", "Text Mining",
+    "Speculative Design", "Critical Making", "Machine Learning", "Participant Observation",
+    "Topic Modeling", "Slow Scrolling"
+  ],
+  "gerund": [
+    "mapping", "mining", "remixing", "curating", "decoding",
+    "unmaking", "archiving", "visualizing", "rereading", "tracing"
+  ],
+  "verb": [
+    "digitize", "automate", "archive", "quantify", "generate", "visualize", "curate"
+  ],
+  "place": [
+    "Ohio", "Granville", "the Internet Archive", "a Liberal Arts College",
+    "Small-Town Libraries", "the Global South", "Social Media", "the Classroom",
+    "Medieval Europe", "the Cloud"
+  ],
+  "era": [
+    "Infinite Generation", "Surveillance", "Big Data", "Autocomplete",
+    "Machine Creativity", "Information Overload"
+  ]
+}
+;
+const mods = {
+  capitalize: s => s.charAt(0).toUpperCase() + s.slice(1),
+  a: s => (/^[aeiou]/i.test(s) ? "an " : "a ") + s
+};
+const pick = a => a[Math.floor(Math.random() * a.length)];
+function expand(sym) {
+  let out = pick(G[sym]);
+  let prev;
+  do {
+    prev = out;
+    out = out.replace(/#([a-zA-Z.]+)#/g, (_, tag) => {
+      const [name, ...ms] = tag.split(".");
+      return ms.reduce((r, m) => mods[m](r), expand(name));
+    });
+  } while (out !== prev);
+  return out;
+}
+let current = "", generated = 0, kept = [];
+const $ = id => document.getElementById(id);
+function update(){ $("count").textContent = "Generated: " + generated + " · Kept: " + kept.length; }
+function gen(){ current = expand("origin"); generated++; $("out").textContent = current; update(); }
+function keepTitle(t){
+  if(!t || kept.includes(t)) return;
+  kept.push(t); renderKept(); update();
+}
+function renderKept(){
+  const ul = $("kept"); ul.innerHTML = "";
+  kept.forEach((t,i)=>{
+    const li = document.createElement("li");
+    const s = document.createElement("span"); s.textContent = t;
+    const b = document.createElement("button"); b.textContent = "Remove";
+    b.onclick = () => { kept.splice(i,1); renderKept(); update(); };
+    li.append(s,b); ul.append(li);
+  });
+}
+$("gen").onclick = gen;
+$("keep").onclick = () => keepTitle(current);
+$("ten").onclick = () => {
+  const ul = $("tenList"); ul.innerHTML = ""; $("tenWrap").hidden = false;
+  for(let i=0;i<10;i++){
+    const t = expand("origin"); generated++;
+    const li = document.createElement("li");
+    const s = document.createElement("span"); s.textContent = t;
+    const b = document.createElement("button"); b.textContent = "Keep";
+    b.onclick = () => keepTitle(t);
+    li.append(s,b); ul.append(li);
+  }
+  update();
+};
+gen();
+</script></body></html>

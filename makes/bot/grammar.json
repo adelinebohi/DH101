@@ -1,0 +1,73 @@
+{
+  "origin": [
+    "#title#",
+    "#title#",
+    "#title#"
+  ],
+  "title": [
+    "#topic.capitalize#: #subtitle#",
+    "#topic.capitalize#: #subtitle#",
+    "#question.capitalize#",
+    "#gerund.capitalize# #object# with #method#: #subtitle#",
+    "#gerund.capitalize# #object# in the Age of #era#"
+  ],
+  "topic": [
+    "the #adj# #noun#",
+    "#adj# #noun#s and their #noun#s",
+    "#noun# as #noun#",
+    "toward #adj.a# #noun#",
+    "#adj.a# #noun# of #object#"
+  ],
+  "subtitle": [
+    "A #method# Approach to #object#",
+    "#gerund.capitalize# #object# Across #place#",
+    "Notes on #object# and #object#",
+    "What #noun.a.capitalize# Can Teach Us About #object#",
+    "#adj.a.capitalize# Case Study of #place#",
+    "Lessons from #object# in #place#"
+  ],
+  "question": [
+    "is #object# just #noun.a#?",
+    "can #noun.a# be #adj#?",
+    "who owns #object# in #place#?",
+    "what do we lose when we #verb# #object#?",
+    "why does #object# keep #gerund#?"
+  ],
+  "adj": [
+    "algorithmic", "networked", "haunted", "crowdsourced", "post-human",
+    "distant", "archival", "feral", "synthetic", "vernacular",
+    "accidental", "open-source", "melancholy", "recursive"
+  ],
+  "noun": [
+    "archive", "spreadsheet", "chatbot", "map", "metadata", "database",
+    "meme", "dataset", "algorithm", "playlist", "footnote", "interface",
+    "corpus", "timeline"
+  ],
+  "object": [
+    "memory", "campus life", "the college library", "group chats",
+    "lost libraries", "digital labor", "handwritten letters", "shared playlists",
+    "student data", "the humanities", "forgotten websites", "authorship",
+    "cultural heritage", "everyday language"
+  ],
+  "method": [
+    "Distant Reading", "Network Analysis", "Close Listening", "Text Mining",
+    "Speculative Design", "Critical Making", "Machine Learning", "Participant Observation",
+    "Topic Modeling", "Slow Scrolling"
+  ],
+  "gerund": [
+    "mapping", "mining", "remixing", "curating", "decoding",
+    "unmaking", "archiving", "visualizing", "rereading", "tracing"
+  ],
+  "verb": [
+    "digitize", "automate", "archive", "quantify", "generate", "visualize", "curate"
+  ],
+  "place": [
+    "Ohio", "Granville", "the Internet Archive", "a Liberal Arts College",
+    "Small-Town Libraries", "the Global South", "Social Media", "the Classroom",
+    "Medieval Europe", "the Cloud"
+  ],
+  "era": [
+    "Infinite Generation", "Surveillance", "Big Data", "Autocomplete",
+    "Machine Creativity", "Information Overload"
+  ]
+}
