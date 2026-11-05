@@ -1,0 +1,60 @@
+1. Why does student data keep mining?
+2. Tracing student data in the Age of Autocomplete
+3. Visualizing cultural heritage in the Age of Machine Creativity
+4. The vernacular spreadsheet: A Speculative Design Reading of everyday language
+5. Mapping everyday language with Participant Observation: Lessons from digital labor in a Liberal Arts College
+6. Who owns digital labor in Social Media?
+7. Mining authorship in the Age of Big Data
+8. Rereading lost libraries in the Age of Big Data
+9. A post-human archive of everyday language: Lessons from digital labor in the Global South
+10. Mining handwritten letters with Slow Scrolling: A feral Case Study of Granville
+11. Tracing shared playlists in the Age of Autocomplete
+12. What do we lose when we generate shared playlists?
+13. Mapping the humanities in the Age of Surveillance
+14. A accidental spreadsheet of authorship: A archival Case Study of the Classroom
+15. Curating everyday language with Network Analysis: Lessons from authorship in the Classroom
+16. Rereading lost libraries with Topic Modeling: What a footnote Can Teach Us About lost libraries
+17. Visualizing cultural heritage in the Age of Autocomplete
+18. Timeline as metadata: A Distant Reading Reading of the college library
+19. Can a metadata be open-source?
+20. Rereading cultural heritage with Participant Observation: What an algorithm Can Teach Us About forgotten websites
+21. Who owns shared playlists in Granville?
+22. Decoding shared playlists in the Age of Surveillance
+23. Mining forgotten websites with Speculative Design: What a database Can Teach Us About campus life
+24. Remixing shared playlists with Distant Reading: A Distant Reading Reading of shared playlists
+25. Mining the humanities in the Age of Surveillance
+26. A algorithmic corpus of student data: Notes on forgotten websites and cultural heritage
+27. Can an archive be distant?
+28. Tracing cultural heritage in the Age of Autocomplete
+29. A crowdsourced dataset of the humanities: Tracing authorship Across Medieval Europe
+30. Toward a accidental chatbot: Tracing lost libraries Across Medieval Europe
+31. Remixing student data with Text Mining: What an archive Can Teach Us About campus life
+32. The recursive database: Lessons from digital labor in Ohio
+33. Visualizing digital labor in the Age of Information Overload
+34. Unmaking campus life with Participant Observation: What a playlist Can Teach Us About the humanities
+35. A synthetic map of handwritten letters: A distant Case Study of the Classroom
+36. The synthetic meme: A Text Mining Reading of forgotten websites
+37. A recursive archive of shared playlists: Lessons from group chats in the Classroom
+38. Accidental algorithms and their maps: A haunted Case Study of the Internet Archive
+39. Toward a post-human meme: A archival Case Study of Granville
+40. Can a database be haunted?
+41. Visualizing cultural heritage with Machine Learning: Notes on shared playlists and the college library
+42. Visualizing shared playlists in the Age of Infinite Generation
+43. Decoding everyday language in the Age of Infinite Generation
+44. The networked dataset: Lessons from digital labor in Social Media
+45. The distant timeline: Unmaking student data Across the Cloud
+46. The vernacular interface: Notes on student data and cultural heritage
+47. A post-human playlist of lost libraries: Lessons from student data in the Internet Archive
+48. Is handwritten letters just a chatbot?
+49. Interface as corpus: Mining student data Across the Global South
+50. Mining lost libraries in the Age of Big Data
+51. Who owns campus life in Ohio?
+52. What do we lose when we digitize memory?
+53. The post-human spreadsheet: A Topic Modeling Reading of the humanities
+54. What do we lose when we generate forgotten websites?
+55. Mapping handwritten letters in the Age of Big Data
+56. A feral meme of forgotten websites: A Critical Making Reading of everyday language
+57. What do we lose when we archive everyday language?
+58. Toward a algorithmic metadata: Lessons from digital labor in Small-Town Libraries
+59. Corpus as meme: Notes on the humanities and memory
+60. Can an algorithm be algorithmic?
